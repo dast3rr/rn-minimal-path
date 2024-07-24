@@ -6,6 +6,7 @@ import json
 from dotenv import find_dotenv, load_dotenv
 import os
 import sys
+import itertools
 
 
 load_dotenv(find_dotenv())
@@ -77,13 +78,18 @@ def get_distance(start_point, finish_point):
     return distance
 
 
-
-def main():
+def get_distance_matrix():
     points_cords = []
+    points_ids = {}
     with open(os.path.join(os.path.dirname(sys.argv[0]), 'points.txt'), 'r', encoding='utf-8') as f:
-        for point in f.readlines():
-            point_cords = get_cords(point)
-            points_cords.append(point_cords)
+        lines = f.readlines()
+        for point in lines:
+            point_cords = get_cords(point.strip('\n'))
+            if point_cords not in points_cords:
+                points_cords.append(point_cords)
+            if point.strip('\n') not in points_ids.values():
+                points_ids[lines.index(point)] = point.strip('\n')
+            
 
     distance_matrix = []
     for start_cords in points_cords:
@@ -95,7 +101,101 @@ def main():
                 row.append(get_distance(start_cords, cords))
         distance_matrix.append(row)
         print(row)
-    # print(distance_matrix)
+    return distance_matrix, points_ids
+
+
+def tsp_dynamic_programming(dist_matrix, points_ids):
+
+    n = len(dist_matrix)
+
+   
+
+    # Инициализация dp таблицы и пути
+
+    dp = [[float('inf')] * n for _ in range(1 << n)]
+
+    parent = [[-1] * n for _ in range(1 << n)]  # Родитель для восстановления пути
+
+    dp[1][0] = 0  # Начинаем с первой вершины (0)
+
+
+    # Заполнение dp таблицы
+
+    for mask in range(1, 1 << n):
+
+        for u in range(n):
+
+            if mask & (1 << u):
+
+                for v in range(n):
+
+                    if mask & (1 << v) and u != v:
+
+                        if dp[mask][u] > dp[mask ^ (1 << u)][v] + dist_matrix[v][u]:
+
+                            dp[mask][u] = dp[mask ^ (1 << u)][v] + dist_matrix[v][u]
+
+                            parent[mask][u] = v
+
+
+    # Находим минимальное расстояние для возвращения в начальную точку
+
+    min_dist = float('inf')
+
+    end_mask = (1 << n) - 1
+
+    last_vertex = -1
+
+    for u in range(1, n):
+
+        if min_dist > dp[end_mask][u] + dist_matrix[u][0]:
+
+            min_dist = dp[end_mask][u] + dist_matrix[u][0]
+
+            last_vertex = u
+
+
+    # Восстанавливаем путь
+
+    path = []
+
+    mask = end_mask
+
+    while last_vertex != -1:
+
+        path.append(last_vertex)
+
+        next_vertex = parent[mask][last_vertex]
+
+        mask ^= (1 << last_vertex)
+
+        last_vertex = next_vertex
+
+    path.reverse()
+
+    path.append(0)  # Добавляем начальную точку
+
+
+    # Преобразуем путь в имена вершин
+
+    path_names = [points_ids[i] for i in path]
+    path_ids = [i for i in path]
+
+
+    return path_names, path_ids, min_dist
+
+
+
+def main():
+    matrix, points_ids = get_distance_matrix()
+    min_path, min_path_ids, min_distance = tsp_dynamic_programming(matrix, points_ids)
+
+    print("Кратчайший путь:", min_path)
+
+    print(min_path_ids)
+
+    print("Минимальное расстояние:", min_distance)
+
 
 if __name__ == "__main__":
     main()
