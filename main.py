@@ -2,11 +2,14 @@ import requests
 
 import time
 import json
-
-from dotenv import find_dotenv, load_dotenv
+import random
 import os
 import sys
 import itertools
+import math
+
+from dotenv import find_dotenv, load_dotenv
+
 
 
 load_dotenv(find_dotenv())
@@ -19,7 +22,7 @@ def get_from_distances_cache(start_point, finish_point):
     finish_point_str = f'{finish_point[0]}-{finish_point[1]}'
 
     all_distances = {}
-    with open('aaa apetuhon/data/all_distances.json') as f:
+    with open('data/all_distances.json') as f:
         all_distances = json.load(f)
     
     if start_point_str in all_distances.keys():
@@ -36,14 +39,14 @@ def write_to_cache(start_point, finish_point, distance) -> None:
     start_point_str = f'{start_point[0]}-{start_point[1]}'
     finish_point_str = f'{finish_point[0]}-{finish_point[1]}'
 
-    with open('aaa apetuhon/data/all_distances.json') as f:
+    with open('data/all_distances.json') as f:
         all_distances = json.load(f)
 
     if start_point_str in all_distances.keys():
         all_distances[start_point_str][finish_point_str] = distance
     else:
         all_distances[start_point_str] = {finish_point_str: distance}
-    with open('aaa apetuhon/data/all_distances.json', 'w') as f:
+    with open('data/all_distances.json', 'w') as f:
         json.dump(all_distances, f)
 
 
@@ -88,7 +91,7 @@ def get_distance(start_point, finish_point):
 def get_distance_matrix():
     points_cords = []
     points_ids = {}
-    with open(os.path.join(os.path.dirname(sys.argv[0]), 'points.txt'), 'r', encoding='utf-8') as f:
+    with open('points.txt', 'r', encoding='utf-8') as f:
         lines = f.readlines()
         for point in lines:
             point_cords = get_cords(point.strip('\n'))
@@ -204,6 +207,52 @@ def floyd_checking(matrix):
     return matrix == A
 
 
+def calculate_summary_distance(path, matrix):
+    dist = 0
+    for i in range(len(path) - 1):
+        dist += matrix[path[i]][path[i + 1]]
+    dist += matrix[path[-1]][path[0]]  # return to the starting point
+    return dist
+
+
+def anneal(matrix, points):
+    state = points
+    temp = 1
+    n = 1e6
+    i = 0
+    while i < n:
+        temp *= 0.99
+        i+=1
+        x = random.randint(1, len(state) - 2)
+        y = random.randint(1, len(state) - 2)
+        while x == y:
+            y = random.randint(1, len(state) - 2)
+        new_state = state.copy()
+        new_state[x], new_state[y] = new_state[y], new_state[x]
+        f_old = calculate_summary_distance(state, matrix)
+        f_new = calculate_summary_distance(new_state, matrix)
+        if f_old == f_new:
+            continue
+        if f_old > f_new:
+            state = new_state
+            continue
+        if (random.uniform(0, 1) < math.exp((f_old - f_new) / temp)):
+            state = new_state
+            continue
+    return state
+
+def anneal_checking(matrix, path, path_length):
+    min_path = 100000000000000000000
+    annealed_path = []
+    for i in range(10):
+        print(f'Annealing {i+1}')
+        annealed_path = anneal(matrix, path)
+        ln = calculate_summary_distance(annealed_path, matrix)
+        if ln < min_path:
+            min_path = ln
+    return min_path == path_length, path == annealed_path
+
+
 def main():
     matrix, points_ids = get_distance_matrix()
     min_path, min_path_ids, min_distance = tsp_dynamic_programming(matrix, points_ids)
@@ -214,11 +263,12 @@ def main():
 
     print("Минимальное расстояние:", min_distance)
 
-    with open('aaa apetuhon/matrix.txt', 'w', encoding='utf-8') as f:
+    with open('matrix.txt', 'w', encoding='utf-8') as f:
         for row in matrix:
             f.write(f'{' - '.join([str(n) for n in row])}\n')
 
     print(floyd_checking(matrix))
+    print(anneal_checking(matrix, min_path_ids, min_distance))
 
 
 if __name__ == "__main__":
