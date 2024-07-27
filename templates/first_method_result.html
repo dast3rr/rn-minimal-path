@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+    {% for el in azs_choice %}
+    <div class="azs-choice__item">
+        <h3>{{ el }}</h3>
+    </div>
+    {% endfor %}
+{% endblock %}
