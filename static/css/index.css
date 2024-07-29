@@ -12,6 +12,7 @@
     text-align: center;
     padding-bottom: 30px;
     font-weight: 600;
+    font-size: 30px;
 }
 .main-page-content__choose-mode{
     height: 150%;
@@ -22,7 +23,89 @@
     text-align: center;
     height: 70%;
     font-weight: 400;
+    font-size: 26px;
 }
 .main-page-content__mode-button{
     text-align: center;
+}
+
+@media (max-width: 1400px){
+    .main-page-content__text{
+        text-align: center;
+        padding-bottom: 30px;
+        font-weight: 600;
+        font-size: 25px;
+    }
+    .main-page-content__mode-text{
+        text-align: center;
+        height: 70%;
+        font-weight: 400;
+        font-size: 22px;
+    }
+}
+
+@media (max-width: 1200px){
+    .main-page-content__text{
+        text-align: center;
+        padding-bottom: 30px;
+        font-weight: 600;
+        font-size: 20px;
+    }
+    .main-page-content__mode-text{
+        text-align: center;
+        height: 70%;
+        font-weight: 500;
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 900px){
+    .main-page-content__text{
+        text-align: center;
+        padding-bottom: 30px;
+        font-weight: 600;
+        font-size: 18px;
+    }
+    .main-page-content__mode-text{
+        text-align: center;
+        height: 70%;
+        font-weight: 500;
+        font-size: 14px;
+    }
+    .main-page-content__choose-mode{
+
+        height: 150%;
+        display: block;
+        width: 100%;
+        margin-right: auto;
+        margin-left: auto;
+    }
+    .main-page-content__mode-button{
+        text-align: center;
+    }
+}
+
+@media (max-width: 500px){
+    .main-page-content__text{
+        text-align: center;
+        padding-bottom: 30px;
+        font-weight: 700;
+        font-size: 14px;
+    }
+    .main-page-content__mode-text{
+        text-align: center;
+        height: 70%;
+        font-weight: 600;
+        font-size: 10px;
+    }
+    .main-page-content__choose-mode{
+        height: 150%;
+        display: block;
+        width: 100%;
+        margin-right: auto;
+        margin-left: auto;
+    }
+    .main-page-content__mode-button{
+        text-align: center;
+    }
 }

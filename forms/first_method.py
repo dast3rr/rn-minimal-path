@@ -5,7 +5,7 @@ from wtforms.validators import DataRequired
 class FirstMethodForm(FlaskForm):
     npz = SelectField('Выберите НПЗ', choices=[], validators=[DataRequired()])
     azs = SelectMultipleField('Выберите АЗС', choices=[], validators=[DataRequired()])
-    submit = SubmitField('Отправить')
+    submit = SubmitField('Рассчитать')
 
     def set_azs_choices(self, azs_list):
         self.azs.choices = [(azs, azs) for azs in azs_list]

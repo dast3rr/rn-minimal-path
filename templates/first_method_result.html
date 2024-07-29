@@ -5,19 +5,17 @@
         <div class="result-container__el">
             {% for el in points %}
             <div class="azs-choice__item">
-                <h6>{{ el }}</h6>
-                {% if not loop.last%}<h6>&#8595;</h6>{% endif %}
+                {{ el }}<br>
+                {% if not loop.last%}&#8595;{% endif %}
             </div>
             {% endfor %}
+            Протяженность кратчайшего маршрута:<br>
+            {{ length }}м.
         </div>
-        <div class="result-container__el result-container__image">
-            <img src="/static/img/map_file.jpg" alt="Не удалось получить карту">
+        <div class="result-container__image-block">
+            <img class="result-container__image" src="/static/img/map_file.jpg" alt="Не удалось получить карту">
         </div>
-        <div class="result-container__el">
-            <h6>Протяженность кратчайшего маршрута:</h6>
-            <h6>{{ length }}м.</h6>
-        </div>
-        
     </div>
+    
    
 {% endblock %}
