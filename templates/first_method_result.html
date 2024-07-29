@@ -1,8 +1,23 @@
 {% extends "base.html" %}
 {% block content %}
-    {% for el in azs_choice %}
-    <div class="azs-choice__item">
-        <h3>{{ el }}</h3>
+    <link rel="stylesheet" href="/static/css/first_method_result.css">
+    <div class="result-container">
+        <div class="result-container__el">
+            {% for el in points %}
+            <div class="azs-choice__item">
+                <h6>{{ el }}</h6>
+                {% if not loop.last%}<h6>&#8595;</h6>{% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        <div class="result-container__el result-container__image">
+            <img src="/static/img/map_file.jpg" alt="Не удалось получить карту">
+        </div>
+        <div class="result-container__el">
+            <h6>Протяженность кратчайшего маршрута:</h6>
+            <h6>{{ length }}м.</h6>
+        </div>
+        
     </div>
-    {% endfor %}
+   
 {% endblock %}

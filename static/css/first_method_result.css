@@ -1,0 +1,14 @@
+.result-container{
+    width: 40%;
+    margin: auto;
+    background-color: rgba(255, 255, 0, 0.295);
+    margin-top: 3%;
+    padding: 40px;
+    border-radius: 30px;
+    text-align: center;
+}
+.result-container__image{
+    padding-top: 20px;
+    margin-top: auto;
+    margin-bottom: auto;
+}

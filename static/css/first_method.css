@@ -1,4 +1,12 @@
-.first-method-form{
-    width: 50%;
+.first-method-container{
+    width: 40%;
+    margin: auto;
+    background-color: rgba(255, 255, 0, 0.295);
+    margin-top: 5%;
+    padding: 40px;
+    border-radius: 30px;
+}
+.first-method-container__form{
+    width: 90%;
     margin: auto;
 }

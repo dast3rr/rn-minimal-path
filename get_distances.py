@@ -8,9 +8,8 @@ import sys
 import itertools
 import math
 
-API_KEY = os.getenv('API_KEY')
+API_KEY = str(os.getenv('API_KEY'))
 url = f'https://routing.api.2gis.com/carrouting/6.0.0/global?key={API_KEY}'
-
 
 def get_from_distances_cache(start_point, finish_point):
     start_point_str = f'{start_point[0]}-{start_point[1]}'
@@ -46,13 +45,23 @@ def write_to_cache(start_point, finish_point, distance) -> None:
 
 
 def get_cords(point):
-    response = requests.get(f'https://catalog.api.2gis.com/3.0/items/geocode?q={point}&fields=items.point&key={API_KEY}')
-    if response.status_code == 200:
-        cords = response.json()['result']['items'][0]['point']
-        return cords['lat'], cords['lon']
+    
+    all_cords = {}
+    with open('data/all_cords.json', encoding='utf-8') as f:
+        all_cords = json.load(f)
+    if point in all_cords.keys():
+        return all_cords[point][0], all_cords[point][1]
     else:
-        print('Неизвестная ошибка, обратитесь в поддержку(получение координат)')
-        sys.exit()
+        response = requests.get(f'https://catalog.api.2gis.com/3.0/items/geocode?q={point}&fields=items.point&key={API_KEY}')
+        if response.status_code == 200:
+            cords = response.json()['result']['items'][0]['point']
+            all_cords[point] = cords['lat'], cords['lon']
+            with open('data/all_cords.json', 'w', encoding='utf-8') as f:
+                json.dump(all_cords, f)
+            return cords['lat'], cords['lon']
+        else:
+            print('Неизвестная ошибка, обратитесь в поддержку(получение координат)')
+            sys.exit()
 
 
 def get_distance(start_point, finish_point):
@@ -86,14 +95,12 @@ def get_distance(start_point, finish_point):
 def get_distance_matrix(points):
     points_cords = []
     points_ids = {}
-    with open(points, 'r', encoding='utf-8') as f:
-        lines = f.readlines()
-        for point in lines:
-            point_cords = get_cords(point.strip('\n'))
-            if point_cords not in points_cords:
-                points_cords.append(point_cords)
-            if point.strip('\n') not in points_ids.values():
-                points_ids[lines.index(point)] = point.strip('\n')
+    for point in points:
+        point_cords = get_cords(point.strip('\n'))
+        if point_cords not in points_cords:
+            points_cords.append(point_cords)
+        if point.strip('\n') not in points_ids.values():
+            points_ids[points.index(point)] = point.strip('\n')
             
 
     distance_matrix = []
