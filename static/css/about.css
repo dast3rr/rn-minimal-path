@@ -1,0 +1,20 @@
+.about-us-container__content {
+    width: 60%;
+    background-color: rgba(255, 255, 0, 0.315);
+    margin-right: auto;
+    margin-left: auto;
+    padding: 15px;
+    border-radius: 30px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+.about-us-container__content img {
+    max-width: 700px;
+    max-height: 500px;
+}
+.about-us-container__button{
+    margin-top: 10px;
+}
+.about-us-container {
+    margin-top: 2%;
+}

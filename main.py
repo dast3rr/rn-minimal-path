@@ -25,7 +25,8 @@ def index():
 
 @app.route('/about')
 def about():
-    return render_template('about.html', title="О нас")
+    cat_image = requests.get('https://api.thecatapi.com/v1/images/search').json()[0]['url']
+    return render_template('about.html', title="Очень полезная информация", cat_image=cat_image)
 
 
 @app.route('/first_method', methods=['GET', 'POST'])
@@ -88,4 +89,4 @@ def second_method():
     return render_template('second_method.html', title="Второй метод")
 
 
-app.run() 
+app.run(debug=True) 

@@ -1,4 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1>В разработке </h1>
+    <link rel="stylesheet" href="static/css/about.css">
+    <div class="about-us-container">
+        <div class="about-us-container__content">
+            <img src={{cat_image}} alt="Тут должен был быть котик:(">
+            <div class="about-us-container__button">
+                <a role="button" class="btn btn-dark" href="/about">Новый котик</a>
+            </div>
+        </div>
+    </div>
 {% endblock %}
