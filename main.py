@@ -7,7 +7,7 @@ import json
 from dotenv import find_dotenv, load_dotenv
 load_dotenv(find_dotenv())
 
-YANDEX_API_KEY = os.getenv('YANDEX_API_KEY')
+YANDEX_API_KEY = os.environ.get('YANDEX_API_KEY')
 
 from get_distances import get_path
 from forms.first_method import FirstMethodForm
@@ -50,14 +50,14 @@ def first_method():
         points = []
         points.append(form.npz.data)
         points.extend(form.azs.data)
-        points = '%'.join(points)
+        points = '~'.join(points)
         return redirect(f'first_method_result/{points}')
     return render_template('first_method.html', title="Первый метод", form=form)
 
 
 @app.route('/first_method_result/<points>', methods=['GET', 'POST'])
 def first_method_result(points):
-    points = points.split('%')
+    points = points.split('~')
     result = get_path(points)
 
     all_points = {}
@@ -76,8 +76,8 @@ def first_method_result(points):
         desc = f'{lon},{lat},pmwtl{result[0].index(point) + 1}'
         points_descriptions.append(desc)
 
-    image = requests.get(f'https://static-maps.yandex.ru/v1?pl={cords_list_for_yandex}&pt={'~'.join(points_descriptions)}&apikey={YANDEX_API_KEY}')
-    with open('static/img/map_file.jpg', 'wb') as f:
+    image = requests.get(f'https://static-maps.yandex.ru/v1?pl={cords_list_for_yandex}&pt={"~".join(points_descriptions)}&apikey={YANDEX_API_KEY}')
+    with open('static/img/map_file.png', 'wb') as f:
         f.write(image.content)
     
     return render_template('first_method_result.html', title="Результаты", points=result[0], length=result[2])
@@ -88,5 +88,4 @@ def second_method():
     return render_template('second_method.html', title="Второй метод")
 
 
-if __name__ == "__main__":
-    app.run(debug=True) 
+app.run() 
